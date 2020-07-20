@@ -1,0 +1,119 @@
+import React, { Component } from 'react'
+import Navigation from './Navigation2'
+import { FormText, Container, Col, Row, Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import Axios from 'axios'
+
+export default class Post extends Component {
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      taskName: '',
+      discription: '',
+      categoryId: '',
+      category: [],
+      categoryName: '',
+    }
+  }
+
+
+  componentDidMount() {
+    Axios.get('http://localhost:3002/category', this.state)
+      .then((response) => {
+        console.log(response.body)
+        this.setState({
+          category: response.data,
+          categoryId: response.data[0]._id
+        })
+      })
+  }
+
+  handleChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    })
+  }
+
+
+
+  render() {
+    return (
+      <div>
+        <Navigation />
+        <Container>
+      
+          <Form>
+
+            <Row form>
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="taskName">Task Name</Label>
+                  <Input type="text" name="taskName" id="taskName" placeholder="Enter task name" />
+                </FormGroup>
+              </Col>
+              <Col md={6}>
+                <FormGroup >
+
+
+                  <Label for="category" >Category</Label>
+                  <Input type="select" name="categoryName" id="categoryName" value={this.state.categoryName}
+                    onChange={this.handleChange}>
+                    {
+                      this.state.category.map((categoryName) => {
+                        return <option key={categoryName._id} value={categoryName._id}>{categoryName.categoryName}</option>
+                      })
+                    }
+                  </Input>
+
+                </FormGroup>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="discription">Task Discription</Label>
+                  <Input type="textarea" name="discription" id="discription" placeholder="Enter your project discription" />
+                </FormGroup>
+              </Col>
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="exampleFile">File</Label>
+                  <Input type="file" name="file" id="exampleFile" />
+                  <FormText color="muted">
+                    If you have any files for additional info please upload here!
+        </FormText>
+
+                </FormGroup>
+
+              </Col>
+            </Row>
+
+            <Row>
+              <Col md={3}>
+                <FormGroup >
+                  <Label for="amount" check>Amount</Label>
+                  <Input type="text" name="amount" id="amount" />
+
+                </FormGroup>
+
+
+
+              </Col>
+              <Col md={4}>
+                <FormGroup>
+                  <Label for="skills">Skills required</Label>
+                  <Input type="text" name="skills" id="skills" placeholder="Any skills or knowledge" />
+                </FormGroup>
+              </Col>
+              <Col md={3}>
+                <Button>Post</Button>
+              </Col>
+            </Row>
+          </Form>
+
+        </Container>
+      </div>
+    )
+  }
+}
